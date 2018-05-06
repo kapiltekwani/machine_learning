@@ -63,11 +63,11 @@ print(top9)
 print("******* Checkpoint #4 *****")
 master_frame['primary_sector'] = master_frame.category_list.str.split("|").str.get(0)
 print("Mapping each category to one of the eight main sectors")
-mapping_df = pd.read_csv('/Users/tkapil/Learning/mapping.csv', engine='python', encoding = "palmos")
+mapping_df = pd.read_csv('mapping.csv', engine='python', encoding = "palmos")
 mapping_df = mapping_df.set_index('category_list').idxmax(axis=1)
 mapping_df = pd.DataFrame({'primary_sector': mapping_df.index, 'main_sector': mapping_df.values})
 
-print(mapping_df)
+print(mapping_df.head(10))
 
 
 
@@ -166,12 +166,6 @@ print("for D1:", d1[d1.main_sector == country_1_second_main_sector].groupby('per
 print("for D2:", d2[d2.main_sector == country_2_second_main_sector].groupby('permalink')[['raised_amount_usd']].sum().sort_values(by='raised_amount_usd', ascending=False).head(1))
 print("for D3:", d3[d3.main_sector == country_3_second_main_sector].groupby('permalink')[['raised_amount_usd']].sum().sort_values(by='raised_amount_usd', ascending=False).head(1))
 
-print("Number of investments in the third-best sector")
-print("for D1:", d1[d1.main_sector == country_1_third_main_sector].groupby('permalink')[['raised_amount_usd']].sum().sort_values(by='raised_amount_usd', ascending=False).head(1))
-print("for D2:", d2[d2.main_sector == country_2_third_main_sector].groupby('permalink')[['raised_amount_usd']].sum().sort_values(by='raised_amount_usd', ascending=False).head(1))
-print("for D3:", d3[d3.main_sector == country_3_third_main_sector].groupby('permalink')[['raised_amount_usd']].sum().sort_values(by='raised_amount_usd', ascending=False).head(1))
-
-
 print("******* Checkpoint #6 *****")
 
 average_funding = average_funding[average_funding.funding_round_type.isin(['venture','angel', 'seed', 'private_equity'])]
@@ -205,7 +199,7 @@ plt.xlabel("Country Code")
 plt.ylabel("Total Investment Amount")
 plt.show();
 
-
+print("Number of investments in the top 3 sectors of the top 3 countries")
 country_sector_wise_count_frame = country_1_investment_count_df.head(3)
 country_sector_wise_count_frame = country_sector_wise_count_frame.append(country_2_investment_count_df.head(3))
 country_sector_wise_count_frame = country_sector_wise_count_frame.append(country_3_investment_count_df.head(3))
