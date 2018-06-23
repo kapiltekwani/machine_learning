@@ -153,13 +153,13 @@ print(vif_cal(input_data=final_car_prices, dependent_col="price"))
 
 
 ###########################Model 2 ################
-X_train_rfe = X_train_rfe.drop('rotor', 1)
+X_train_rfe = X_train_rfe.drop('two', 1)
 
 lm2 = sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm2.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["rotor"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(["two"], axis=1), dependent_col="price"))
 
 
 ###########################Model 3 ################
@@ -169,7 +169,7 @@ lm3= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm3.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "rotor"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "two"], axis=1), dependent_col="price"))
 
 # ###########################Model 4 ################
 X_train_rfe = X_train_rfe.drop('four', 1)
@@ -178,7 +178,7 @@ lm4= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm4.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "two"], axis=1), dependent_col="price"))
 
 # ###########################Model 5 ################
 X_train_rfe = X_train_rfe.drop(['five'], axis=1)
@@ -187,7 +187,7 @@ lm5= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm5.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor", "five"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "two", "five"], axis=1), dependent_col="price"))
 
 
 # ###########################Model 6 ################
@@ -197,13 +197,4 @@ lm6= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm6.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor", "five", "stroke"], axis=1), dependent_col="price"))
-
-# ###########################Model 7 ################
-X_train_rfe = X_train_rfe.drop('two', 1)
-
-lm7= sm.OLS(y_train, X_train_rfe).fit()
-
-print(lm7.summary())
-
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor", "carwidth", "boreratio", "stroke", "two"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "two", "five", "stroke"], axis=1), dependent_col="price"))
