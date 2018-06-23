@@ -2,6 +2,9 @@ from pandas import DataFrame, read_csv;
 
 import numpy as np;
 import pandas as pd;
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 car_prices = pd.read_csv('CarPrice_Assignment.csv')
 
@@ -104,16 +107,15 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7 ,test_s
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LinearRegression
 lm = LinearRegression()
-rfe = RFE(lm, 15)             # running RFE
+rfe = RFE(lm, 15)
 rfe = rfe.fit(X_train, y_train)
-print(rfe.support_)           # Printing the boolean results
+print(rfe.support_)
 print(rfe.ranking_)
 
 print(X_train.columns[rfe.support_])
 col = X_train.columns[rfe.support_]
 X_train_rfe = X_train[col]
 
-print "X_train_rfe.columns", X_train_rfe.columns
 #function for calculating VIF
 def vif_cal(input_data, dependent_col):
     vif_df = pd.DataFrame( columns = ['Var', 'Vif'])
@@ -127,14 +129,17 @@ def vif_cal(input_data, dependent_col):
         vif_df.loc[i] = [xvar_names[i], vif]
     return vif_df.sort_values(by = 'Vif', axis=0, ascending=False, inplace=False)
 
+
+## Basically here I have copy-pasted columns from rfe.support_ variable
 final_car_prices = car_prices[['enginelocation', 'carwidth', 'curbweight', 'enginesize',
        'boreratio', 'stroke', 'rotor', 'five', 'four', 'three',
        'twelve', 'two', 'BMW', 'PEUGEOT', 'PORSCHE', 'price']]
-print "final_car_prices", final_car_prices
 
+
+# plt.figure(figsize = (16,10))     # Size of the figure
+# sns.heatmap(final_car_prices.corr(), annot = True)
 
 import statsmodels.api as sm
-
 
 ###########################Model 1#################
 X_train_rfe = sm.add_constant(X_train_rfe)
@@ -148,29 +153,57 @@ print(vif_cal(input_data=final_car_prices, dependent_col="price"))
 
 
 ###########################Model 2 ################
-X_train_rfe = X_train_rfe.drop('enginesize', 1)
+X_train_rfe = X_train_rfe.drop('rotor', 1)
 
 lm2 = sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm2.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(["rotor"], axis=1), dependent_col="price"))
 
 
-###########################Model 2 ################
-X_train_rfe = X_train_rfe.drop('four', 1)
+###########################Model 3 ################
+X_train_rfe = X_train_rfe.drop('enginesize', 1)
 
 lm3= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm3.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four"], axis=1), dependent_col="price"))
-#
-# ###########################Model 2 ################
-# X_train_rfe = X_train_rfe.drop('VOLVO', 1)
-#
-# lm4= sm.OLS(y_train, X_train_rfe).fit()
-#
-# print(lm4.summary())
-#
-# print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "VOLVO"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "rotor"], axis=1), dependent_col="price"))
+
+# ###########################Model 4 ################
+X_train_rfe = X_train_rfe.drop('four', 1)
+
+lm4= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm4.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor"], axis=1), dependent_col="price"))
+
+# ###########################Model 5 ################
+X_train_rfe = X_train_rfe.drop(['five'], axis=1)
+
+lm5= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm5.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor", "five"], axis=1), dependent_col="price"))
+
+
+# ###########################Model 6 ################
+X_train_rfe = X_train_rfe.drop('stroke', 1)
+
+lm6= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm6.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor", "five", "stroke"], axis=1), dependent_col="price"))
+
+# ###########################Model 7 ################
+X_train_rfe = X_train_rfe.drop('two', 1)
+
+lm7= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm7.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "rotor", "carwidth", "boreratio", "stroke", "two"], axis=1), dependent_col="price"))
