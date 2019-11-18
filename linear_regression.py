@@ -19,8 +19,6 @@ car_prices.loc[car_prices["company_name"] == "vokswagen", "company_name"] = "vol
 car_prices.loc[car_prices["company_name"] == "vw", "company_name"] = "volkswagen"
 car_prices.loc[car_prices["company_name"] == "maxda", "company_name"] = "mazda"
 car_prices.loc[car_prices["enginetype"] == "dohcv", "enginetype"] = "dohc"
-
-
 car_prices["company_name"] = car_prices["company_name"].str.upper();
 
 ###########binary categorical variables
@@ -115,6 +113,7 @@ print(rfe.ranking_)
 print(X_train.columns[rfe.support_])
 col = X_train.columns[rfe.support_]
 X_train_rfe = X_train[col]
+X_test_rfe  = X_test[col]
 
 #function for calculating VIF
 def vif_cal(input_data, dependent_col):
@@ -171,30 +170,96 @@ print(lm3.summary())
 
 print(vif_cal(input_data=final_car_prices.drop(["enginesize", "two"], axis=1), dependent_col="price"))
 
-# ###########################Model 4 ################
+
+###########################Model 4 ################
 X_train_rfe = X_train_rfe.drop('four', 1)
 
 lm4= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm4.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "two"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(['four', "enginesize", "two"], axis=1), dependent_col="price"))
 
-# ###########################Model 5 ################
-X_train_rfe = X_train_rfe.drop(['five'], axis=1)
+
+###########################Model 5 ################
+X_train_rfe = X_train_rfe.drop('five', 1)
 
 lm5= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm5.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "two", "five"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(['five','four', "enginesize", "two"], axis=1), dependent_col="price"))
 
 
-# ###########################Model 6 ################
+###########################Model 6 ################
 X_train_rfe = X_train_rfe.drop('stroke', 1)
 
 lm6= sm.OLS(y_train, X_train_rfe).fit()
 
 print(lm6.summary())
 
-print(vif_cal(input_data=final_car_prices.drop(["enginesize", "four", "two", "five", "stroke"], axis=1), dependent_col="price"))
+print(vif_cal(input_data=final_car_prices.drop(['stroke', 'five', 'four', "enginesize", "two"], axis=1), dependent_col="price"))
+
+###########################Model 7 ################
+X_train_rfe = X_train_rfe.drop('rotor', 1)
+
+lm7= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm7.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(['rotor', 'stroke', 'five', 'four', "enginesize", "two"], axis=1), dependent_col="price"))
+
+###########################Model 8 ################
+X_train_rfe = X_train_rfe.drop('boreratio', 1)
+
+lm8= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm8.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(['boreratio', 'rotor', 'stroke', 'five', 'four', "enginesize", "two"], axis=1), dependent_col="price"))
+
+
+###########################Model 9 ################
+X_train_rfe = X_train_rfe.drop('carwidth', 1)
+
+lm9= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm9.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(['carwidth', 'boreratio', 'rotor', 'stroke', 'five', 'four', "enginesize", "two"], axis=1), dependent_col="price"))
+
+###########################Model 10 ################
+X_train_rfe = X_train_rfe.drop('PORSCHE', 1)
+
+lm10= sm.OLS(y_train, X_train_rfe).fit()
+
+print(lm10.summary())
+
+print(vif_cal(input_data=final_car_prices.drop(['PORSCHE','carwidth', 'boreratio', 'rotor', 'stroke', 'five', 'four', "enginesize", "two"], axis=1), dependent_col="price"))
+
+
+############PREDICTIONS############################
+X_test_rfe = X_test[['enginelocation', 'curbweight', 'three', 'twelve', 'BMW', 'PEUGEOT']]
+
+X_test_rfe = sm.add_constant(X_test_rfe, has_constant="add")
+
+y_pred_rfe = lm10.predict(X_test_rfe)
+
+print "X_train", X_train_rfe.shape
+print "X_test", X_test_rfe.shape
+
+print "y_test", y_test.shape
+print "y_pred_rfe", y_pred_rfe.shape
+
+
+ # Actual vs Predicted
+c = [i for i in range(0,62,1)]
+fig = plt.figure()
+plt.plot(c,y_test, color="blue", linewidth=2.5, linestyle="-")
+plt.plot(c,y_pred_rfe, color="red",  linewidth=2.5, linestyle="-")
+fig.suptitle('Actual and Predicted', fontsize=20)
+plt.xlabel('Index', fontsize=18)
+plt.ylabel('Car Price', fontsize=16)
+
+print(y_test.shape)
+print(y_pred_rfe.shape)
